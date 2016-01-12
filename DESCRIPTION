@@ -1,0 +1,17 @@
+Package: REMI
+Title: REMI: EMI Consulting's Internal R Package
+Version: 1.2
+Date: November 10, 2015
+Author: Michael Blonsky and Jess Chandler
+Maintainer: Michael Blonsky <mblonsky@emiconsulting.com>
+Description: This is an internal package for EMI Consulting. GO TEAM!
+Depends:
+    R (>= 3.1.0),
+    ggplot2
+LinkingTo: foreign,
+    gdata,
+    Hmisc,
+    xtable,
+    extrafont
+License: NA
+LazyData: TRUE

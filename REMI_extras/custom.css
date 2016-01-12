@@ -1,0 +1,252 @@
+/* Set the main font to Proxima Nova, same
+   as My Word 2010 uses. Also set the
+   default font size to 11pt.
+ 
+   The maximum width to 35em enhances
+   readability through optimal line
+   length. Note: this setting is ignored
+   by Word/Libre Office*/
+body  {
+   font-family: 'Proxima Nova', sans-serif;
+   font-size: 11pt;
+   background-color: white;
+   padding-top: 1em;
+   margin: auto;
+   max-width: 50em;
+}
+
+
+/* Set the paragraph margin and
+   padding to 0 except for the bottom */
+p {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 10pt;
+}
+ 
+/* Center the table and add top/bottom margins */
+table{
+  margin: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border: none;
+  border-collapse: collapse;
+  width: 90%;
+}
+ 
+/* The tr padding/margin 0 is important for table
+   import, while the font needs to be specified as
+   font and not font-family/font-size due to limiations
+   in Libre Office */
+td, tr{
+  font: 9pt;
+  font-family: 'Proxima Nova', sans-serif;
+  padding: 0px;
+  margin: 0px;
+}
+ 
+/* The cell should have a little space to easy reading
+   although this section is mostly ignored by the
+   Libre Office import */
+td {
+  padding: 4px;
+  padding-bottom: 2px;
+}
+
+
+td, th {
+    font-size: .9em;
+    border: 1px solid #d9d9d8;
+    padding: 3px 7px 2px 7px;
+}
+
+th {
+    font-size: .9em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color: #d9d9d9;
+    color: #000000;
+}
+
+table tr:nth-child(odd) td{
+   background-color: #FFffff;
+}
+table tr:nth-child(even) td{
+    background-color: #f9f9f8;
+}
+tr.alt td {
+    color: #000000;
+    background-color: #f9f9f8;
+}
+/* Ensure that captions are correct for Figs and Tabs */
+figcaption, caption, tab.cap { 
+  font-weight: bold;
+}
+/*body{
+counter-reset:table figure;
+}
+
+
+caption:before {
+    counter-increment: table;
+    content: "Table " counter(table) ": ";
+}
+
+
+caption:before{
+    counter-increment: figure;
+    content: "Figure " counter(figure) ": ";
+}
+*/
+/* Set the headings to correspond to Word-style */
+h1, h2, h3, h4, h5{
+  margin: 10pt 0pt 0pt 0pt;
+  font-family: 'Proxima Nova', sans-serif;
+  font-weight: 200;
+}
+ 
+/* h1 has a slightly larger top margins
+   so we re-set that from the other*/
+h1 {
+  margin: 24pt 0pt 0pt 0pt;
+  font-size: 22pt;
+  text-transform: uppercase;
+  color: #ff6d2e;
+}
+ 
+ 
+h2 {
+  font-size: 16pt;
+  color: #ff6d2e;
+}
+ 
+h3 {
+  font-size: 14pt;
+  color: #ff6d2e;
+}
+ 
+h4 {
+  font-size: 13pt;
+  color: #808080;
+}
+ 
+h5 {
+  font-size: 11pt;
+  color: #808080;
+}
+ 
+/* Try some counter stuff for headings */
+body {counter-reset: h2}
+  h2 {counter-reset: h3}
+  h3 {counter-reset: h4}
+
+  h2:before {counter-increment: h2; content: counter(h2) ". "}
+  h3:before {counter-increment: h3; content: counter(h2) "." counter(h3) ". "}
+
+  h2.nocount:before, h3.nocount:before, h4.nocount:before { content: ""; counter-increment: none } 
+
+/* if we need to have chapters, comment above and use this */
+/* Try some counter stuff for headings */
+/*h1 {counter-reset: h1}
+  h2 {counter-reset: h2}
+  h3 {counter-reset: h3}
+  h1:before {counter-increment: h1; content: counter(h1) ". "}
+  h2:before {counter-increment: h2; content: counter(h1) "." counter(h2) ". "}
+  h3:before {counter-increment: h3; content: counter(h1) "." counter(h2) "." counter(h3) ". "}
+
+  h2.nocount:before, h3.nocount:before, h4.nocount:before { content: ""; counter-increment: none } 
+*/
+
+
+ 
+/* The following sections are mostly
+   unrelated to Word/Libre Office imports */
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+ 
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+ 
+pre {
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+ 
+pre code {
+   display: block; padding: 0.5em;
+}
+ 
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+ 
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+ 
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+ 
+@media print {
+   * {
+      background: transparent !important;
+	  color: black !important;
+	  filter: none !important;
+	  -ms-filter: none !important;
+   }
+ 
+   body {
+	  font-size:11pt;
+	  max-width:100%;
+   }
+ 
+   a, a:visited {
+	  text-decoration: underline;
+   }
+ 
+   hr {
+	  visibility: hidden;
+	  page-break-before: always;
+   }
+ 
+   pre, blockquote {
+	  padding-right: 1em;
+	  page-break-inside: avoid;
+   }
+ 
+   tr, img {
+	  page-break-inside: avoid;
+   }
+ 
+   img {
+	  max-width: 100% !important;
+   }
+ 
+   @page {
+	  margin-top: 2cm;
+	  margin-bottom: 1.5cm;
+	  margin-left: 3cm;
+	  margin-right: 3cm;
+   }
+ 
+   p, h2, h3 {
+	  orphans: 3; widows: 3;
+   }
+ 
+   h2, h3 {
+	  page-break-after: avoid;
+   }
+}
