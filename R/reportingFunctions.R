@@ -193,6 +193,49 @@ EMIcdf <- function(vector, lineColor = EMIcolors(1)) {
         scale_y_continuous(labels = scales::percent)
 }
 
+#' EMI Likert Plot
+#'
+#' EMIlikert(): function to make an EMI color formatted likert plot
+#' @param df is a dataframe with likert responses as columns; can contain other data: caseids and groups (like type)
+#' @param likertcols is a vector of columns of likert responses to plot
+#' @param group is a column in the data referring to groups
+#' @import likert plyr
+#' @export
+#' @return a dataframe object with the ID, code, name, start date, end dte, and health of each project
+#' @examples
+#' my_likert_plot <- EMIlikertPlot(mydf, mylikertcols, mygroup, include.histogram=TRUE)
+EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
+  # df is df 
+  # likertcols is vector of logical representing columns in df that are likert Qs to plot
+  # group is varname in df that want to group on
+  qlikerts <- df[,likertcols]
+  if (!is.null(group)) {
+    if (length(group)==1) {
+      mygroup <- df[[group]]
+    } else { # doesn't work yet dunno why. max group = 1 now
+      stop("Can only have one group in this function, use regular likert")
+      #mygroup <- paste0(df[group[1]],df[group[2]])
+    }
+     #mygroup <- df[[group]] 
+  } else {
+    mygroup = NULL
+  }
+  ldf <- likert(qlikerts, grouping=mygroup)
+  # ! make palette
+  colnoplot <- length(unique(qlikerts[[1]])) #number of items in likert scale
+  is.odd <- function(x) x %% 2 != 0
+  if(is.odd(colnoplot)) {
+			EMIlikertcol <- c('#4372b9','#5ba0d7','#ECECEF','#FDA785','#ff6d2e')
+		} else {
+			EMIlikertcol <-c('#4372b9','#5ba0d7','#FDA785','#ff6d2e')
+		}
+  thisPalette <- colorRampPalette(EMIlikertcol)(colnoplot)
+  plot(ldf, 
+       col=thisPalette,
+       col.strip.background='#ECECEF',...)
+}
+
+
 #' Table Functions
 
 #' myTable
