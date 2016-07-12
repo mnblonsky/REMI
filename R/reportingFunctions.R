@@ -1,12 +1,12 @@
-#' ---
-#' title: "Reporting Functions for Projects"
-#' author: "EMI Consulting"
-#' date: "January 27, 2015"
-#' ---
+# ---
+# title: "Reporting Functions for Projects"
+# author: "EMI Consulting"
+# date: "January 27, 2015"
+# ---
 #
-#' Contains functions for visualizing and reporting data as tables and figures
+# Contains functions for visualizing and reporting data as tables and figures
 
-#' ### Figure Functions
+# ******* Figure Functions *******
 . = NULL
 
 #' EMI Plot
@@ -205,7 +205,7 @@ EMIcdf <- function(vector, lineColor = EMIcolors(1)) {
 #' @examples
 #' my_likert_plot <- EMIlikertPlot(mydf, mylikertcols, mygroup, include.histogram=TRUE)
 EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
-  # df is df 
+  # df is df
   # likertcols is vector of logical representing columns in df that are likert Qs to plot
   # group is varname in df that want to group on
   qlikerts <- df[,likertcols]
@@ -216,7 +216,7 @@ EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
       stop("Can only have one group in this function, use regular likert")
       #mygroup <- paste0(df[group[1]],df[group[2]])
     }
-     #mygroup <- df[[group]] 
+     #mygroup <- df[[group]]
   } else {
     mygroup = NULL
   }
@@ -230,7 +230,7 @@ EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
 			EMIlikertcol <-c('#4372b9','#5ba0d7','#FDA785','#ff6d2e')
 		}
   thisPalette <- colorRampPalette(EMIlikertcol)(colnoplot)
-  plot(ldf, 
+  plot(ldf,
        col=thisPalette,
        col.strip.background='#ECECEF',...)
 }

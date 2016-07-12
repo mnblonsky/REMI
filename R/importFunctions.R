@@ -1,12 +1,12 @@
-#' ---
-#' title: "Importing Functions"
-#' author: "EMI Consulting"
-#' date: "January 27, 2015"
-#' ---
+# ---
+# title: "Importing Functions"
+# author: "EMI Consulting"
+# date: "January 27, 2015"
+# ---
 #
-#' Contains functions for importing and cleaning data for projects
+# Contains functions for importing and cleaning data for projects
 
-#' ### Importing Functions
+# ******* Importing Functions *******
 . = NULL
 
 #' Load Data
@@ -229,7 +229,7 @@ fuzzyMerge = function(dfX, dfY, by = intersect(names(dfX), names(dfY))[1],
 }
 
 
-#' ### Cleaning Functions
+#' ******* Cleaning Functions *******
 
 #' Remove Bad Variables
 #'

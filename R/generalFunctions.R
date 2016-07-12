@@ -1,10 +1,10 @@
-#' ---
-#' title: "EMI General R Functions"
-#' author: "EMI Consulting"
-#' date: "January 27, 2015"
-#' ---
+# ---
+# title: "EMI General R Functions"
+# author: "EMI Consulting"
+# date: "January 27, 2015"
+# ---
 
-#' ### General Functions
+# ******* General Functions *******
 . = NULL
 
 #' Only Numbers
@@ -110,7 +110,7 @@ csvNum2Date = function(num) {
     as.POSIXct(as.numeric(num*secPerDay),origin=as.POSIXct('1900-01-01'))
 }
 
-#' ### File System Functions
+#' ******* File System Functions *******
 
 #' File Extension
 #'

@@ -1,12 +1,12 @@
-#' ---
-#' title: "Analysis Functions for Projects"
-#' author: "EMI Consulting"
-#' date: "January 27, 2015"
-#' ---
+# ---
+# title: "Analysis Functions for Projects"
+# author: "EMI Consulting"
+# date: "January 27, 2015"
+# ---
 #
-#' Contains functions for analyzing, visualizing, and reporting data
+# Contains functions for analyzing, visualizing, and reporting data
 
-#' ### Analysis Functions
+# ****** Analysis Functions *******
 . = NULL
 
 #' Weighted Variance
@@ -259,7 +259,7 @@ qualtricsMatrix = function(df, q, id1, id2, dfQuestions,
     if (v2==v3) data.frame(v1=v1, v2=v2, stringsAsFactors = F) else data.frame(v1=v1, v2=v2, v3=v3, stringsAsFactors = F)
 }
 
-#' ### Statistical Tests
+#' ******* Statistical Tests *******
 
 #' pTest
 #'
