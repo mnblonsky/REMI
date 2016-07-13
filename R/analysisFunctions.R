@@ -1,12 +1,12 @@
-#' ---
-#' title: "Analysis Functions for Projects"
-#' author: "EMI Consulting"
-#' date: "January 27, 2015"
-#' ---
+# ---
+# title: "Analysis Functions for Projects"
+# author: "EMI Consulting"
+# date: "January 27, 2015"
+# ---
 #
-#' Contains functions for analyzing, visualizing, and reporting data
+# Contains functions for analyzing, visualizing, and reporting data
 
-#' ### Analysis Functions
+# ****** Analysis Functions *******
 . = NULL
 
 #' Weighted Variance
@@ -22,6 +22,7 @@
 #' @param xLoc if x is matrix-like, this specifies the column containing vector
 #' information. Can be the column number or name.
 #' @param wLoc if x is matrix-like, this specifies the column containing weight
+#' @param na.rm if True, remove NA's from data. Default is False
 #' information. Can be the column number or name.
 weighted.var <- function(x, w = NULL, xLoc = 2, wLoc = 3, na.rm = FALSE) {
     if (! is.vector(x)) {
@@ -49,6 +50,7 @@ weighted.var <- function(x, w = NULL, xLoc = 2, wLoc = 3, na.rm = FALSE) {
 #' information. Can be the column number or name.
 #' @param wLoc if x is matrix-like, this specifies the column containing weight
 #' information. Can be the column number or name.
+#' @param na.rm if True, remove NA's from data. Default is False
 weighted.mean <- function(x, w = NULL, xLoc = 2, wLoc = 3, na.rm = FALSE) {
     if (! is.vector(x)) {
         w = if (is.null(w)) x[[wLoc]] else w
@@ -76,6 +78,7 @@ weighted.mean <- function(x, w = NULL, xLoc = 2, wLoc = 3, na.rm = FALSE) {
 #' information. Can be the column number or name.
 #' @param wLoc if x is matrix-like, this specifies the column containing weight
 #' information. Can be the column number or name.
+#' @param na.rm if True, remove NA's from data. Default is False
 weighted.var.se = function(x, w = NULL, xLoc = 2, wLoc = 3, na.rm = FALSE) {
     #  Computes the variance of a weighted mean following Cochran 1977 definition
     if (! is.vector(x)) {
@@ -118,7 +121,7 @@ sample.size = function(N, P, A, cv) {
 #' Determines if there are any outliers in a set of data. By default, it assumes
 #' a normal distribution and removes data beyond 5 std. deviations.
 #' @param v input vector
-#' @param sd number of standard deviations to determine if a data point is an
+#' @param deviations number of standard deviations to determine if a data point is an
 #' outlier. Default is 5.
 #' @param method method used to determine outliers. Default is to assume a
 #' normal distribution
@@ -154,7 +157,6 @@ duplicateInfo = function(x, missingVals = c('', NA))
       sum(duplicated(x[! x %in% missingVals])),
       sum(x %in% missingVals))
 
-# TODO: option for dfQuestions to be character vector of questions, or just the useful text!
 
 #' qualtricsColumns
 #'
@@ -166,6 +168,7 @@ duplicateInfo = function(x, missingVals = c('', NA))
 #' @param id vector specifying columns (1,2,3...)
 #' @param dfQuestions data frame with same columns as df - contains question
 #' strings
+#' @param category name of category to print in final data
 #' @param func function to run on cleaned data. An example could be fixing text
 #' (removing a ":") or converting to a different class. Default is no function.
 #' @param remove vector of strings/objects to remove from each column (ex. NA, NaN)
@@ -180,6 +183,7 @@ qualtricsColumns = function(df, q, id, dfQuestions = NULL, category = 'Category'
                             func = NULL, remove = c(NA, NaN, NULL, '', '-99'),
                             questionChar = '-', charInQ = 0,
                             includeRespondent = FALSE, ...) {
+    # TODO: option for dfQuestions to be character vector of questions, or just the useful text!
     # TODO: option to include row numbers (by-respondent analysis); keep all data and use remove at end
     cols = paste0(q, id)
     names(cols) = cols
@@ -209,8 +213,8 @@ qualtricsColumns = function(df, q, id, dfQuestions = NULL, category = 'Category'
 #' Defaults are useful for Qualtrics data structures.
 #' @param df main data frame
 #' @param q string representing question name (ex. "Q")
-#' @param idRow vector specifying the row numbers (1,2,3...)
-#' @param idCol vector specifying the column numbers (1,2,3...)
+#' @param id1 vector specifying the row numbers (1,2,3...)
+#' @param id2 vector specifying the column numbers (1,2,3...)
 #' @param dfQuestions data frame with same columns as df - contains question
 #' strings
 #' @param func function to run on cleaned data. An example could be fixing text
@@ -259,7 +263,7 @@ qualtricsMatrix = function(df, q, id1, id2, dfQuestions,
     if (v2==v3) data.frame(v1=v1, v2=v2, stringsAsFactors = F) else data.frame(v1=v1, v2=v2, v3=v3, stringsAsFactors = F)
 }
 
-#' ### Statistical Tests
+#' ******* Statistical Tests *******
 
 #' pTest
 #'
@@ -284,7 +288,7 @@ pTest = function(v1, v2, type = '', out='p', ...) {
 #'
 #' Determines the number of standards deviations from the mean, given a certain
 #' confidence. For example, 0.95 (95% confidence) will return 1.96.
-#' @param Confidence percentage (as a decimal)
+#' @param confidence percentage (as a decimal)
 sdFromMean = function(confidence) {
     qnorm((1 + confidence) / 2) - qnorm(0.5)
 }
@@ -297,10 +301,9 @@ sdFromMean = function(confidence) {
 #' @param x matrix-like R object
 #' @return data frame of correlations with significance ratings
 corstarsl <- function(x){
-    require(Hmisc)
     x <- as.matrix(x)
-    R <- rcorr(x)$r
-    p <- rcorr(x)$P
+    R <- Hmisc::rcorr(x)$r
+    p <- Hmisc::rcorr(x)$P
 
     ## define notions for significance levels; spacing is important.
     mystars <- ifelse(p < .001, "***", ifelse(p < .01, "** ", ifelse(p < .05, "* ", " ")))
@@ -335,6 +338,8 @@ corstarsl <- function(x){
 #' byvector converts the output to a vector. This is likely useful when calling
 #' `by` with only 1 index and when the output of FUN is always the same length.
 bydf = function(...) as.data.frame(as.table(by(...)))
+
+#' @rdname bydf
 byvector = function(...) unlist(by(...))
 
 #'
