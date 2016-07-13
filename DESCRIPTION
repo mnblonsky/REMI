@@ -8,10 +8,16 @@ Description: This is an internal package for EMI Consulting. GO TEAM!
 Depends:
     R (>= 3.1.0),
     ggplot2
-LinkingTo: foreign,
-    gdata,
+Imports:
+    knitr,
     Hmisc,
+    extrafont,
     xtable,
-    extrafont
-License: NA
+    likert,
+    scales,
+    foreign,
+    gdata,
+    RMySQL
+License: GPL-2
 LazyData: TRUE
+RoxygenNote: 5.0.1

@@ -23,7 +23,6 @@
 #' Proxima Nova cannot be loaded.
 #' @param ... parameters for ggplot()
 EMIplot = function(...) {
-    require(ggplot2)
     EMIplot = ggplot(...)
 
     font = ifelse('font' %in% names(list(...)), list(...)[['font']],
@@ -60,6 +59,8 @@ EMIsave = function(filename, ...) {
 #' @param accentLoc numbers specifying index to replace with accent color
 #' @param ramp number of colors to interpolate - only works if length of colors
 #' is 1 (fade to black) or 2 (interpolate). Default is for no ramping.
+#' @param accent accent color. EMI Orange by default
+#' @param order ordered vector of colors. Default is the EMI color set.
 #' @examples
 #' barplot(rep(1,4), col=EMIcolors(rep(1,4), accentLoc = 3))
 #' barplot(rep(1,10), col=EMIcolors(1:10)) # all EMI colors
@@ -101,27 +102,24 @@ EMIcolors = function(colors = 1, accentLoc = NA, ramp = 0,
 #' Show EMI Colors
 #'
 #' Displays a barplot of EMI's color scheme.
-EMIcolorsShow = function(n = 10, ...) {
-    df = data.frame(X = factor(as.character(1:n), levels = as.character(1:n)), Count = rep(1,n))
-    EMIbar(df, colors = EMIcolors(1:10), ...)
+#' @param colors list of colors, by number, to show. Defaults to all 10 colors
+EMIcolorsShow = function(colors = 1:10, ...) {
+    df = data.frame(X = factor(as.character(colors),
+                               levels = as.character(colors)),
+                    Count = rep(1, length(colors)))
+    EMIbar(df, colors = EMIcolors(colors), ...)
 }
 
-#' Navigant Color Scheme
-#'
-#' See EMIcolors() for details
-Navigantcolors = function(colors = 1, accentLoc = NA, ramp = 0) {
+#' @rdname EMIcolors
+Navigantcolors = function(...) {
     order = c("#A74B22", "#EEAF2E", "#167D79", "#0B5499", "#576B14", "#801670")
-    EMIcolors(colors, accentLoc, ramp, accent = "#000000",
-              order = order)
+    EMIcolors(..., order = order)
 }
 
-#' Navigant Color Scheme 2
-#'
-#' See EMIcolors() for details
-Navigantcolors2 = function(colors = 1, accentLoc = NA, ramp = 0) {
+#' @rdname EMIcolors
+Navigantcolors2 = function(...) {
     order = c("#A15F15", "#546A21", "#ECB02E", "#0A549B", "#6D6855", "#80176B", "#A62621")
-    EMIcolors(colors, accentLoc, ramp, accent = "#000000",
-              order = order)
+    EMIcolors(..., order = order)
 }
 
 
@@ -152,14 +150,15 @@ EMIbar = function(data, colors = EMIcolors(1), dataCols = 1:2, ...) {
 #' and Count (bar size). Works best with data from the myTableMulti function.
 #' @param colors vector of colors with length of 1 or the same length as the
 #' number of Fill options. Default colors are all EMI Blue (EMIcolors(1))
-EMIbarMulti = function(data, colors = NULL, position = 'dodge') {
+#' @param ... parameters passed to geom_bar
+EMIbarMulti = function(data, colors = NULL) {
     # needs updating - color defaults?
     fillLen = length(levels(data$Fill))
     xLen = length(levels(data$X))
     colors = if (is.null(colors)) EMIcolors(1:fillLen) else colors
     EMIplot() + geom_bar(aes(x=X, y=Count, fill=Fill),
                          data=data,
-                         stat='identity', position=position) +
+                         stat='identity') +
         labs(title=NULL, x=NULL) + coord_flip() +
         scale_fill_manual(values=rev(colors))
 }
@@ -199,11 +198,14 @@ EMIcdf <- function(vector, lineColor = EMIcolors(1)) {
 #' @param df is a dataframe with likert responses as columns; can contain other data: caseids and groups (like type)
 #' @param likertcols is a vector of columns of likert responses to plot
 #' @param group is a column in the data referring to groups
-#' @import likert plyr
-#' @export
+#' @param ... variables passed to col.strip.background
 #' @return a dataframe object with the ID, code, name, start date, end dte, and health of each project
 #' @examples
-#' my_likert_plot <- EMIlikertPlot(mydf, mylikertcols, mygroup, include.histogram=TRUE)
+#' mydf = data.frame(group = rep(1:3, each = 10),
+#'                   Q1 = factor(sample(1:5, 30, replace = TRUE)),
+#'                   Q2 = factor(sample(1:5, 30, replace = TRUE)))
+#' my_likert_plot <- EMIlikertPlot(mydf, 2:3)
+#' my_likert_plot
 EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
   # df is df
   # likertcols is vector of logical representing columns in df that are likert Qs to plot
@@ -220,7 +222,7 @@ EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
   } else {
     mygroup = NULL
   }
-  ldf <- likert(qlikerts, grouping=mygroup)
+  ldf <- likert::likert(qlikerts, grouping=mygroup)
   # ! make palette
   colnoplot <- length(unique(qlikerts[[1]])) #number of items in likert scale
   is.odd <- function(x) x %% 2 != 0
@@ -236,7 +238,7 @@ EMIlikertPlot <- function(df, likertcols, group=NULL, ...){
 }
 
 
-#' Table Functions
+# ****** Table Functions *******
 
 #' myTable
 #'
@@ -373,17 +375,90 @@ myTableMulti = function(table, name = "", rowNames = NULL, colNames = NULL,
 #' @param include.rownames Should row names be printed? (default is FALSE)
 #' @param addCommas converts numbers to strings (1234 -> "1,234")
 #' @param ... extra parameters sent to xtable(table, ...)
-printTable = function(table, file = NULL, caption = NULL, type = 'HTML',
+printTable = function(table, file = NULL, type = 'HTML',
                       include.rownames = FALSE, addCommas = FALSE,
                       ...) {
     if (is.null(table)) stop('No data in table')
     format.args = if (addCommas) list(big.mark = ',') else list()
 
-    require(xtable)
-    print(xtable(table, ...), type = type, include.rownames = include.rownames,
+    print(xtable::xtable(table, ...), type = type, include.rownames = include.rownames,
           format.args = format.args)
 
     if (!is.null(file)) write.csv(table, file = file)
+}
+
+# ******* KnitR Functions *********
+
+#' EMI KnitR Setup
+#'
+#' Sets up formatting to knit (or compile) an R notebook. Optimized for HTML
+#' outputs, although it should work for PDF or Word outputs as well.
+#' @param tempPath folder path to temporarily save files during compilation.
+#' Currently only used for figures.
+EMIknitSetup = function(tempPath = NULL) {
+    if (is.null(tempPath)) tempPath = ''
+    knitr::opts_chunk$set(message = FALSE, echo=FALSE, warning=FALSE,
+                          fig.path = file.path(tempPath, 'Figs/'))
+
+    ztn = local({
+        i = 0
+        function(x) {
+            i <<- i + 1
+            paste('<b>\n\nTable ', i, ': ', x, '</b>',sep = '')
+            #  wraps your caption in <caption></caption>
+        }
+    })
+    knitr::knit_hooks$set(tab.cap = function(before, options, envir) {
+        if(before)
+            ztn(options$tab.cap)
+    })
+    zfn = local({
+        i = 0
+        function(x) {
+            i <<- i + 1
+            paste('<b>\n\nFigure ', i, ': ', x,  '</b>',sep = '')
+            #  wraps your caption in <caption></caption>
+        }
+    })
+    knitr::knit_hooks$set(fig.cap = function(before, options, envir) {
+        if(before)
+            zfn(options$fig.cap)
+    })
+
+}
+
+#' Print Knitted List
+#' Prints a vector of strings as a list in KnitR format. Works for
+#' markdown and latex output formats.
+#' @param x vector of strings
+#' @param out.format either 'markdown' or 'latex'.
+#' @param environment used for latex formatting
+#' @param marker used for latex formatting
+printList <- function(x, out.format = knitr::opts_knit$get("out.format"),
+                      environment = "itemize",
+                      marker = NULL) {
+    if (out.format == "markdown") {
+        if (environment != 'itemize' || is.null(marker)) {
+            warning("Ignoring arguments that are not supported for markdown output.")
+        }
+        out <- sprintf("\n\n%s\n \n", paste("*", x, collapse = "\n"))
+    } else {
+        if (out.format == "latex") {
+            itemCommand <- if (missing(marker)) {
+                "\\item"
+            } else {
+                sprintf("\\item[%s]", marker)
+            }
+            listEnv <- c(
+                sprintf("\\begin{%s}\n", environment),
+                sprintf("\n\\end{%s}\n", environment))
+            out <- paste(itemCommand, x, collapse = "\n")
+            out <- sprintf("%s%s%s", listEnv[1], out, listEnv[2])
+        } else {
+            stop("Output format not supported.")
+        }
+    }
+    return(knitr::asis_output(out))
 }
 
 #' Histogram Frequencies
