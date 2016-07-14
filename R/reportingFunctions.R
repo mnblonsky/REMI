@@ -122,6 +122,12 @@ Navigantcolors2 = function(...) {
     EMIcolors(..., order = order)
 }
 
+#' @rdname EMIcolors
+CEcolors = function(...) {
+    order = c("#D9531E", "#344D6D", "#A3B6D1", "#A6A6A6", "#F2C2A6","#71903d", "#ECA883", "#f4ce25", "#ECECEF", "#191919")
+    EMIcolors(..., order = order)
+}
+
 
 #' EMI Bar Graph 1-D
 #'
