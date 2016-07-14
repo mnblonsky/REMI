@@ -1,10 +1,10 @@
-#' ---
-#' title: "EMI General R Functions"
-#' author: "EMI Consulting"
-#' date: "January 27, 2015"
-#' ---
+# ---
+# title: "EMI General R Functions"
+# author: "EMI Consulting"
+# date: "January 27, 2015"
+# ---
 
-#' ### General Functions
+# ******* General Functions *******
 . = NULL
 
 #' Only Numbers
@@ -26,7 +26,7 @@ rmcommas <- function (x) as.numeric(as.character(gsub(",", "", x)))
 #' you include the index that you want returned.
 #' @param string input character vector to split
 #' @param split the separator used to split string
-#' @param index optional, indices of split string to return.
+#' @param idx optional, indices of split string to return.
 #' Default returns the full split string
 #' @param reverseIdx if TRUE, reference indices from the end of the string.
 #' Default is FALSE
@@ -53,6 +53,7 @@ mySplit = function(string, split, idx=NA,
 #' isnothing
 #'
 #' True if v is NA, NULL, or NaN. Returns a boolean vector of length v.
+#' @param v vector
 isnothing = function(v) {
     is.null(v) | is.na(v) | is.nan(v)
 }
@@ -110,7 +111,7 @@ csvNum2Date = function(num) {
     as.POSIXct(as.numeric(num*secPerDay),origin=as.POSIXct('1900-01-01'))
 }
 
-#' ### File System Functions
+#' ******* File System Functions *******
 
 #' File Extension
 #'
@@ -142,6 +143,7 @@ myBasename = function(fName, includeFolders = FALSE, includeExtn = FALSE) {
 #' - Figures
 #' - Working
 #' @param mainFolder main analysis folder
+#' @param addCSS if True, adds the EMI css file to the analysis folder
 #' @return data frame of subfolders
 createAnalysisFolders = function(mainFolder, addCSS = FALSE) {
     if (! file.exists(mainFolder)) dir.create(mainFolder)
@@ -168,7 +170,7 @@ secureServer = function() {
     stop('Could not find secure server.')
 }
 
-REMI_Extras = function() {
+.REMI_Extras = function() {
     file.path(secureServer(), 'Code Library', 'R', 'REMI_Extras')
 }
 
@@ -178,8 +180,9 @@ REMI_Extras = function() {
 #' convert Excel files to .csv files (which R can read). If this function does not work,
 #' the best solution is to open the Excel file and save it as a .csv file. Then tell
 #' R to load the .csv file instead.
+#' @param path folder to add to shell path. Defaults to REMI Extras directory
 addMyShellPath = function(path = NULL) {
-    myPath = if (is.null(path)) REMI_Extras() else path
+    myPath = if (is.null(path)) .REMI_Extras() else path
     curPath = Sys.getenv('PATH')
     if (! myPath %in% mySplit(curPath, ':')) {
         print('Updating path for python capability')
@@ -196,7 +199,7 @@ loadProximaNova = function() {
     extrafont::loadfonts(quiet = TRUE)
     extrafont::loadfonts(device = 'postscript', quiet = TRUE)
     if (! 'Proxima Nova Regular' %in% extrafont::fonttable()$FullName) {
-        font_import(REMI_Extras())
+        extrafont::font_import(.REMI_Extras())
         extrafont::loadfonts(quiet = TRUE)
         extrafont::loadfonts(device = 'postscript', quiet = TRUE)
     }
@@ -210,6 +213,6 @@ loadProximaNova = function() {
 #' @param dir directory to copy the CSS file to. It should be the same as the
 #' directory of the analysis file.
 getCSS = function(dir) {
-    cssFile = file.path(REMI_Extras(), 'custom.css')
+    cssFile = file.path(.REMI_Extras(), 'custom.css')
     file.copy(cssFile, file.path(dir, 'custom.css'))
 }
