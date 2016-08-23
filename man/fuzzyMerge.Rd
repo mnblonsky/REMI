@@ -5,7 +5,7 @@
 \title{Fuzzy Matching for Merging Data Frames}
 \usage{
 fuzzyMerge(dfX, dfY, by = intersect(names(dfX), names(dfY))[1], byX = by,
-  byY = by, costs = list(ins = 1, del = 0.25, sub = 1), distance = c(1, 2,
+  byY = by, costs = list(ins = 2, del = 1, sub = 3), distance = c(0, 1, 2,
   3, 5, 7, 10, 15, 20), keepOriginal = FALSE, ...)
 }
 \arguments{

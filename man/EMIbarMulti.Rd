@@ -19,4 +19,14 @@ number of Fill options. Default colors are all EMI Blue (EMIcolors(1))}
 Creates generic EMI bar graph. Takes a data frame (or data from myTableMulti) to
 create a 2-D plot. Colors are customizable.
 }
+\examples{
+df = data.frame(Factor1 = sample(LETTERS[1:4], 100, replace = T),
+                Factor2 = sample(LETTERS[25:26], 100, replace = T),
+                Numbers = sample(1:100))
+
+# EMIbarMulti
+t = bydf(df$Numbers, list(df$Factor1, df$Factor2), mean)
+names(t) = c('X', 'Fill', 'Count')
+EMIbarMulti(t)
+}
 

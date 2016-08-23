@@ -21,4 +21,14 @@ Default colors are all EMI Blue (EMIcolors(1))}
 Creates generic EMI bar graph. Takes a data frame (or data from myTable) to
 create a 1-D plot. Colors are customizable.
 }
+\examples{
+df = data.frame(Factor1 = sample(LETTERS[1:4], 100, replace = T),
+                Factor2 = sample(LETTERS[25:26], 100, replace = T),
+                Numbers = sample(1:100))
+
+# EMIbar
+t = myTable(as.table(by(df$Numbers, df$Factor1, mean)))
+names(t)
+EMIbar(t)
+}
 
