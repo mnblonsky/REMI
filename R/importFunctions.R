@@ -238,28 +238,23 @@ excel2csv = function(infile, sheets = NULL, outfileNames = 'number', ...) {
 #' @seealso agrep
 fuzzyMerge = function(dfX, dfY, by = intersect(names(dfX), names(dfY))[1],
                       byX = by, byY = by,
-                      costs = list(ins=1, del=.25, sub=1),
-                      distance = c(1,2,3,5,7,10,15,20), keepOriginal = FALSE, ...) {
+                      costs = list(ins=2, del=1, sub=3),
+                      distance = c(0,1,2,3,5,7,10,15,20), keepOriginal = FALSE, ...) {
     if (! byX %in% names(dfX)) stop(print(paste(by, 'column is not in data frame X')))
     if (! byY %in% names(dfY)) stop(print(paste(by, 'column is not in data frame Y')))
-    init = as.character(dfX[[byX]])
-    fixed = as.character(dfY[[byY]])
-    assert(length(fixed)==length(unique(fixed)), 'Column must not have duplicates', T)
-    n = length(init)
-    inFixed = init %in% fixed
-    index = numeric(n)
-    index[inFixed] = sapply(init[inFixed], function(x) which(x==fixed))
+    x = as.character(dfX[[byX]])
+    y = as.character(dfY[[byY]])
+    assert(all(! duplicated(y)), 'Column must not have duplicates', error = T)
+    rows = rep(NA, length(x))
     for (d in distance) {
-        unmatched = init[! inFixed]
-        if (length(unmatched)==0) break
-        fuzzy = lapply(unmatched, agrep, x=fixed, max.distance=d)
+        unmatched = x[is.na(rows)]
+        if (length(unmatched) == 0) break
+        fuzzy = lapply(unmatched, agrep, x=y, max.distance=d, costs=costs)
         isMatched = sapply(fuzzy, function(x) length(x) > 0)
-        index[! inFixed][isMatched] = unlist(lapply(fuzzy[isMatched], function(x) if (length(x)==1) x else sample(x,1)))
-        inFixed[! inFixed][isMatched] = TRUE
-        print(paste('At distance', d, 'there are', sum(! inFixed), 'unmatched cases.'))
+        rows[is.na(rows)][isMatched] = unlist(lapply(fuzzy[isMatched], function(x) if (length(x)==1) x else sample(x,1)))
+        print(paste('At distance', d, 'there are', sum(is.na(rows)), 'unmatched cases.'))
     }
-    index[! inFixed] = NA
-    newY = dfY[index,]
+    newY = dfY[rows,]
     if (keepOriginal) newY$Original = newY[[byY]]
     newY[[byY]] = NULL
 

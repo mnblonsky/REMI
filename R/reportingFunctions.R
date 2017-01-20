@@ -140,6 +140,16 @@ CEcolors = function(...) {
 #' data frame. The first column should have category info, the second should have
 #' counts.
 #' Default colors are all EMI Blue (EMIcolors(1))
+#' @examples
+#' df = data.frame(Factor1 = sample(LETTERS[1:4], 100, replace = T),
+#'                 Factor2 = sample(LETTERS[25:26], 100, replace = T),
+#'                 Numbers = sample(1:100))
+#'
+#' # EMIbar
+#' t = myTable(as.table(by(df$Numbers, df$Factor1, mean)))
+#' names(t)
+#' EMIbar(t)
+
 EMIbar = function(data, colors = EMIcolors(1), dataCols = 1:2, ...) {
     names(data)[dataCols] = c('X', 'Count')
     EMIplot(data, aes(x=X, y=Count), ...) +
@@ -157,14 +167,23 @@ EMIbar = function(data, colors = EMIcolors(1), dataCols = 1:2, ...) {
 #' @param colors vector of colors with length of 1 or the same length as the
 #' number of Fill options. Default colors are all EMI Blue (EMIcolors(1))
 #' @param ... parameters passed to geom_bar
+#' @examples
+#' df = data.frame(Factor1 = sample(LETTERS[1:4], 100, replace = T),
+#'                 Factor2 = sample(LETTERS[25:26], 100, replace = T),
+#'                 Numbers = sample(1:100))
+#'
+#' # EMIbarMulti
+#' t = bydf(df$Numbers, list(df$Factor1, df$Factor2), mean)
+#' names(t) = c('X', 'Fill', 'Count')
+#' EMIbarMulti(t)
 EMIbarMulti = function(data, colors = NULL) {
     # needs updating - color defaults?
     fillLen = length(levels(data$Fill))
     xLen = length(levels(data$X))
     colors = if (is.null(colors)) EMIcolors(1:fillLen) else colors
-    EMIplot() + geom_bar(aes(x=X, y=Count, fill=Fill),
-                         data=data,
-                         stat='identity') +
+    EMIplot(data) + geom_bar(aes(x=X, y=Count, fill=Fill),
+                         stat='identity',
+                         ...) +
         labs(title=NULL, x=NULL) + coord_flip() +
         scale_fill_manual(values=rev(colors))
 }
