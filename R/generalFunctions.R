@@ -216,3 +216,35 @@ getCSS = function(dir) {
     cssFile = file.path(.REMI_Extras(), 'custom.css')
     file.copy(cssFile, file.path(dir, 'custom.css'))
 }
+
+
+#' Get substring from right 
+#'
+#' pulls the last n characters from a string
+#' @param x is a character or character vector
+#' #@param n is the number of characters to save
+substrRight <- function(x, n){
+    substr(x, nchar(x)-n+1, nchar(x))
+}
+
+`%ni%` <- Negate(`%in%`)  # not in operator
+
+#' Make currency 
+#'
+#' Turn string numbers or numeric data into currency
+#' @param x is a character or numeric or vector
+makeCurrency <- function(x){
+    x2 <- paste0("$",formatC(x, digits = 2, format="f",big.mark = ",", decimal.mark = "."))
+    x2 <- ifelse(x2=="$" | is.na(x2) | x2=="$NaN" | x2=="$0" , "--", x2)
+    return(x2)
+}
+
+#' Wrap strings 
+#'
+#' Wrap long strings, especially for graphing
+#' @param vector_of_strings is a character vector
+#' @param width is the max length of a line, default is 30
+wrapStrings <- function(vector_of_strings, width = 30){
+    sapply(vector_of_strings,
+           FUN=function(x){paste(strwrap(x,width=width), collapse="\n")})
+}
